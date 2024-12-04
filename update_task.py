@@ -1,6 +1,7 @@
 import psycopg2
 from dotenv import load_dotenv
 import os
+import time
 
 load_dotenv()
 
@@ -17,7 +18,6 @@ CURRENT_TIME_QUERY = "SELECT NOW();"
 
 def update_status():
     try:
-    
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
 
@@ -32,16 +32,12 @@ def update_status():
     except Exception as e:
         print(f"Error updating task statuses: {e}")
     finally:
-        if cursor:
+        if 'cursor' in locals() and cursor:
             cursor.close()
-        if conn:
+        if 'conn' in locals() and conn:
             conn.close()
 
 if __name__ == "__main__":
-    update_status()
-
-
-
-
-
-
+    while True:
+        update_status()
+        time.sleep(30)  # Wait for 30 seconds before running again

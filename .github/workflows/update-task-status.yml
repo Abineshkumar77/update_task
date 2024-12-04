@@ -1,0 +1,29 @@
+name: Update Task Status
+
+on:
+  schedule:
+    - cron: "*/1 * * * *" # Runs every minute
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  run-update-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install psycopg2-binary python-dotenv
+
+      - name: Run update task script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python update_task.py
